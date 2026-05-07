@@ -1,10 +1,10 @@
 [
     {
-        "id": "1778141018577",
+        "id": "1778141315875",
         "name": "Rozik",
-        "total_score": 53,
-        "max_score": 70,
-        "percentage": "75.71",
+        "total_score": 56,
+        "max_score": 105,
+        "percentage": "53.33",
         "results": [
             {
                 "Category": "5. CloudFormation",
@@ -78,7 +78,7 @@
             },
             {
                 "Category": "1. VPC Core",
-                "Item": "VPC Name Tag Compliance",
+                "Item": "VPC Name Tag",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "bank-recognition-vpc"
@@ -113,7 +113,7 @@
             },
             {
                 "Category": "2. Subnet: bank-recognition-public-subnet-1",
-                "Item": "CIDR: 192.168.1.0/24",
+                "Item": "CIDR Match: 192.168.1.0/24",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "192.168.1.0/24"
@@ -148,7 +148,7 @@
             },
             {
                 "Category": "2. Subnet: bank-recognition-public-subnet-2",
-                "Item": "CIDR: 192.168.2.0/24",
+                "Item": "CIDR Match: 192.168.2.0/24",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "192.168.2.0/24"
@@ -183,7 +183,7 @@
             },
             {
                 "Category": "2. Subnet: bank-recognition-private-subnet-1",
-                "Item": "CIDR: 192.168.3.0/24",
+                "Item": "CIDR Match: 192.168.3.0/24",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "192.168.3.0/24"
@@ -218,7 +218,7 @@
             },
             {
                 "Category": "2. Subnet: bank-recognition-private-subnet-2",
-                "Item": "CIDR: 192.168.4.0/24",
+                "Item": "CIDR Match: 192.168.4.0/24",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "192.168.4.0/24"
@@ -256,21 +256,21 @@
                 "Item": "Route Target: igw-*",
                 "Status": "PASS",
                 "Score": 1,
-                "Feedback": "Found"
+                "Feedback": "Configured"
             },
             {
                 "Category": "3. RT: bank-recognition-public-rt",
                 "Item": "Subnet Association 1",
                 "Status": "PASS",
                 "Score": 1,
-                "Feedback": "Verified"
+                "Feedback": "subnet-0ed248fe1bfe7ac96"
             },
             {
                 "Category": "3. RT: bank-recognition-public-rt",
                 "Item": "Subnet Association 2",
                 "Status": "PASS",
                 "Score": 1,
-                "Feedback": "Verified"
+                "Feedback": "subnet-04f773220190c55fd"
             },
             {
                 "Category": "3. RT: bank-recognition-private-rt",
@@ -298,14 +298,14 @@
                 "Item": "Subnet Association 1",
                 "Status": "PASS",
                 "Score": 1,
-                "Feedback": "Verified"
+                "Feedback": "subnet-0b910cbd0afa26373"
             },
             {
                 "Category": "3. RT: bank-recognition-private-rt",
                 "Item": "Subnet Association 2",
                 "Status": "PASS",
                 "Score": 1,
-                "Feedback": "Verified"
+                "Feedback": "subnet-06b049183c45c6f1e"
             },
             {
                 "Category": "4. Gateways",
@@ -316,398 +316,31 @@
             },
             {
                 "Category": "4. Gateways",
-                "Item": "NAT Gateway Available",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Found"
-            },
-            {
-                "Category": "7. Storage",
-                "Item": "S3 Vault Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Instance Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "bank-recognition-db"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Engine: PostgreSQL",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "postgres"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Version: 15.x",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "15.17"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Instance Class: db.t3.micro",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "db.t3.micro"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Storage: gp2",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "gp2"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "RDS Public Access: Disabled",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Private"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "DynamoDB Table Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "bank-recognition-results"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "DynamoDB PK: imageId",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "ImageId"
-            },
-            {
-                "Category": "6. Database",
-                "Item": "DynamoDB Billing: PAY_PER_REQUEST",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "PAY_PER_REQUEST"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "SQS Queue Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "BankRecognitionQueue"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "SQS Visibility Timeout: 120s",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "30s"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "SQS DLQ Attached",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Missing"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "EventBridge Rule Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "bank-recognition-interest-schedule"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "EB Rule State: ENABLED",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "ENABLED"
-            },
-            {
-                "Category": "8. Automation",
-                "Item": "EB Schedule: rate(30 days)",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "rate(30 days)"
-            },
-            {
-                "Category": "9. Lambda: bank-recognition-auth",
-                "Item": "Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "9. Lambda: bank-recognition-ingest",
-                "Item": "Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "9. Lambda: bank-recognition-query",
-                "Item": "Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "9. Lambda: bank-recognition-processing",
-                "Item": "Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "9. Lambda: bank-recognition-interest",
-                "Item": "Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Not found"
-            },
-            {
-                "Category": "10. API Gateway",
-                "Item": "API Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Missing"
-            },
-            {
-                "Category": "11. Amplify",
-                "Item": "App Existence",
-                "Status": "FAIL",
-                "Score": 0,
-                "Feedback": "Missing"
-            },
-            {
-                "Category": "9. Manual Check",
-                "Item": "Authentication",
-                "Status": "FAIL",
-                "Score": 0,
-                "Expected": "Functional",
-                "Actual": "Not Tested/Failed",
-                "Feedback": "Manual verification"
-            },
-            {
-                "Category": "9. Manual Check",
-                "Item": "Biometric Pipeline",
-                "Status": "FAIL",
-                "Score": 0,
-                "Expected": "Functional",
-                "Actual": "Not Tested/Failed",
-                "Feedback": "Manual verification"
-            },
-            {
-                "Category": "9. Manual Check",
-                "Item": "SQS Processing",
-                "Status": "FAIL",
-                "Score": 0,
-                "Expected": "Functional",
-                "Actual": "Not Tested/Failed",
-                "Feedback": "Manual verification"
-            },
-            {
-                "Category": "9. Manual Check",
-                "Item": "Audit Trail",
-                "Status": "FAIL",
-                "Score": 0,
-                "Expected": "Functional",
-                "Actual": "Not Tested/Failed",
-                "Feedback": "Manual verification"
-            }
-        ]
-    },
-    {
-        "id": "1778141180314",
-        "name": "Rozik",
-        "total_score": 35,
-        "max_score": 83,
-        "percentage": "42.17",
-        "results": [
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-networking",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "Exist (Any Status)",
-                "Actual": "CREATE_COMPLETE",
-                "Feedback": "Infrastructure was deployed (Current Status: CREATE_COMPLETE)"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-storage",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "Exist (Any Status)",
-                "Actual": "CREATE_COMPLETE",
-                "Feedback": "Infrastructure was deployed (Current Status: CREATE_COMPLETE)"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-database",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "Exist (Any Status)",
-                "Actual": "CREATE_COMPLETE",
-                "Feedback": "Infrastructure was deployed (Current Status: CREATE_COMPLETE)"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-automation",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "Exist (Any Status)",
-                "Actual": "CREATE_COMPLETE",
-                "Feedback": "Infrastructure was deployed (Current Status: CREATE_COMPLETE)"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-compute",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "Exist (Any Status)",
-                "Actual": "ROLLBACK_COMPLETE",
-                "Feedback": "Infrastructure was deployed (Current Status: ROLLBACK_COMPLETE)"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "Stack Tier: bank-recognition-api",
-                "Status": "FAIL",
-                "Score": 0,
-                "Expected": "Exist (Any Status)",
-                "Actual": "NOT_FOUND",
-                "Feedback": "Stack not found in account"
-            },
-            {
-                "Category": "5. CloudFormation",
-                "Item": "IaC Mandatory Usage",
-                "Status": "PASS",
-                "Score": 1,
-                "Expected": "TRUE",
-                "Actual": "FOUND",
-                "Feedback": "Used CloudFormation for resource provisioning"
-            },
-            {
-                "Category": "1. VPC Core",
-                "Item": "VPC Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "bank-recognition-vpc"
-            },
-            {
-                "Category": "1. VPC Core",
-                "Item": "VPC CIDR (192.168.0.0/16)",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "192.168.0.0/16"
-            },
-            {
-                "Category": "1. VPC Core",
-                "Item": "VPC State (Available)",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "available"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-1",
-                "Item": "Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Found"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-1",
-                "Item": "CIDR: 192.168.1.0/24",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "192.168.1.0/24"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-1",
-                "Item": "MapPublicIp: True",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "True"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-2",
-                "Item": "Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Found"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-2",
-                "Item": "CIDR: 192.168.2.0/24",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "192.168.2.0/24"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-public-subnet-2",
-                "Item": "MapPublicIp: True",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "True"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-1",
-                "Item": "Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Found"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-1",
-                "Item": "CIDR: 192.168.3.0/24",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "192.168.3.0/24"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-1",
-                "Item": "MapPublicIp: False",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "False"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-2",
-                "Item": "Existence",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "Found"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-2",
-                "Item": "CIDR: 192.168.4.0/24",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "192.168.4.0/24"
-            },
-            {
-                "Category": "2. Subnet: bank-recognition-private-subnet-2",
-                "Item": "MapPublicIp: False",
-                "Status": "PASS",
-                "Score": 1,
-                "Feedback": "False"
-            },
-            {
-                "Category": "4. Gateways",
-                "Item": "IGW Existence/Attachment",
+                "Item": "IGW VPC Attachment",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "Attached"
             },
             {
                 "Category": "4. Gateways",
-                "Item": "NAT Gateway Available",
+                "Item": "NAT Gateway Existence",
                 "Status": "PASS",
                 "Score": 1,
                 "Feedback": "Found"
+            },
+            {
+                "Category": "4. Gateways",
+                "Item": "NAT Gateway: Available",
+                "Status": "PASS",
+                "Score": 1,
+                "Feedback": "State: Available"
+            },
+            {
+                "Category": "4. Gateways",
+                "Item": "NAT Gateway: EIP Allocated",
+                "Status": "PASS",
+                "Score": 1,
+                "Feedback": "EIP Assigned"
             },
             {
                 "Category": "7. Storage",
