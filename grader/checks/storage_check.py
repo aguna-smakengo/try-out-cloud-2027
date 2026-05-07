@@ -9,25 +9,28 @@ def check_storage_compliance(s3, sts):
         
         try:
             s3.head_bucket(Bucket=bucket_name)
-            points.append({
-                "Category": "5. Storage", "Item": "S3 Biometric Vault",
-                "Status": "PASS", "Score": 30,
-                "Expected": bucket_name, "Actual": "Found",
-                "Feedback": "Account-specific S3 bucket for uploads"
-            })
+            points.append({"Category": "5. Storage", "Item": "S3 Bucket Existence", "Status": "PASS", "Score": 1, "Feedback": bucket_name})
             
+            # Public Access Block (Micro-Audit per flag)
             pab = s3.get_public_access_block(Bucket=bucket_name)['PublicAccessBlockConfiguration']
-            status = "PASS" if pab['BlockPublicAcls'] and pab['IgnorePublicAcls'] else "FAIL"
-            points.append({
-                "Category": "5. Storage", "Item": "S3 Public Access Block",
-                "Status": status, "Score": 20 if status == "PASS" else 0,
-                "Expected": "ENABLED", "Actual": "ENABLED" if status == "PASS" else "DISABLED",
-                "Feedback": "Data must be protected from public access"
-            })
+            
+            flags = [
+                ('BlockPublicAcls', 'Block Public ACLs'),
+                ('IgnorePublicAcls', 'Ignore Public ACLs'),
+                ('BlockPublicPolicy', 'Block Public Policy'),
+                ('RestrictPublicBuckets', 'Restrict Public Buckets')
+            ]
+            
+            for key, label in flags:
+                val = pab.get(key, False)
+                points.append({
+                    "Category": "5. Storage", "Item": f"S3 Security: {label}",
+                    "Status": "PASS" if val else "FAIL", "Score": 1 if val else 0,
+                    "Feedback": "Enabled" if val else "Disabled"
+                })
         except:
-            points.append({"Category": "5. Storage", "Item": "S3 Biometric Vault", "Status": "FAIL", "Score": 0, "Feedback": f"Bucket {bucket_name} not found"})
-
+            points.append({"Category": "5. Storage", "Item": "S3 Bucket Existence", "Status": "FAIL", "Score": 0, "Feedback": "Not found"})
     except:
-        points.append({"Category": "5. Storage", "Item": "S3 Audit Error", "Status": "FAIL", "Score": 0, "Feedback": "Error during discovery"})
+        points.append({"Category": "5. Storage", "Item": "S3 Audit", "Status": "FAIL", "Score": 0, "Feedback": "Failed"})
 
     return points

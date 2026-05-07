@@ -3,40 +3,30 @@ import boto3
 def check_automation_compliance(sqs, eb):
     points = []
     
-    # 1. SQS Audit
+    # 1. SQS Micro-Audit
     try:
         queues = sqs.list_queues(QueueNamePrefix='BankRecognitionQueue')['QueueUrls']
-        status = "PASS" if queues else "FAIL"
-        points.append({
-            "Category": "6. Automation", "Item": "SQS Queue Existence",
-            "Status": status, "Score": 25 if status == "PASS" else 0,
-            "Expected": "BankRecognitionQueue", "Actual": "Found" if queues else "Missing",
-            "Feedback": "Async transaction pipeline must exist"
-        })
+        exists = "PASS" if queues else "FAIL"
+        points.append({"Category": "6. Automation", "Item": "SQS Queue Existence", "Status": exists, "Score": 1 if exists == "PASS" else 0, "Feedback": "BankRecognitionQueue"})
+        if queues:
+            attr = sqs.get_queue_attributes(QueueUrl=queues[0], AttributeNames=['VisibilityTimeout'])['Attributes']
+            points.append({"Category": "6. Automation", "Item": "SQS Visibility Timeout", "Status": "PASS", "Score": 1, "Feedback": f"{attr['VisibilityTimeout']}s"})
     except:
-        points.append({"Category": "6. Automation", "Item": "SQS Audit Error", "Status": "FAIL", "Score": 0, "Feedback": "Error during discovery"})
+        points.append({"Category": "6. Automation", "Item": "SQS Audit", "Status": "FAIL", "Score": 0, "Feedback": "Failed"})
 
-    # 2. EventBridge Audit
+    # 2. EventBridge Micro-Audit
     try:
         rules = eb.list_rules(NamePrefix='bank-recognition-interest-schedule')['Rules']
-        status = "PASS" if rules else "FAIL"
-        points.append({
-            "Category": "6. Automation", "Item": "EventBridge Rule",
-            "Status": status, "Score": 15 if status == "PASS" else 0,
-            "Expected": "bank-recognition-interest-schedule", "Actual": "Found" if rules else "Missing",
-            "Feedback": "Automation heartbeat for interest calculation"
-        })
-        
+        exists = "PASS" if rules else "FAIL"
+        points.append({"Category": "6. Automation", "Item": "EventBridge Rule Existence", "Status": exists, "Score": 1 if exists == "PASS" else 0, "Feedback": "bank-recognition-interest-schedule"})
         if rules:
-            expr = rules[0]['ScheduleExpression']
-            status = "PASS" if expr == 'rate(30 days)' else "FAIL"
-            points.append({
-                "Category": "6. Automation", "Item": "EventBridge Schedule Frequency",
-                "Status": status, "Score": 10 if status == "PASS" else 0,
-                "Expected": "rate(30 days)", "Actual": expr,
-                "Feedback": "Schedule must follow the 30-day billing cycle"
-            })
+            rule = rules[0]
+            # State (1 pt)
+            points.append({"Category": "6. Automation", "Item": "EB Rule State: ENABLED", "Status": "PASS" if rule['State'] == 'ENABLED' else "FAIL", "Score": 1, "Feedback": rule['State']})
+            # Schedule (1 pt)
+            status = "PASS" if rule['ScheduleExpression'] == 'rate(30 days)' else "FAIL"
+            points.append({"Category": "6. Automation", "Item": "EB Schedule: rate(30 days)", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": rule['ScheduleExpression']})
     except:
-        points.append({"Category": "6. Automation", "Item": "EventBridge Audit Error", "Status": "FAIL", "Score": 0, "Feedback": "Error during discovery"})
+        points.append({"Category": "6. Automation", "Item": "EventBridge Audit", "Status": "FAIL", "Score": 0, "Feedback": "Failed"})
 
     return points
