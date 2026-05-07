@@ -92,7 +92,10 @@ class InfrastructureGrader:
                     self.discovery_metadata["alb_url"] = "⚠️ App Found, but Branch Missing"
         except: pass
 
-        self.log("✅ Audit Complete.")
+        # Sort results by Category then by Item for readability
+        self.results = sorted(self.results, key=lambda x: (x['Category'], x['Item']))
+
+        self.log("✅ Audit Complete. Results Sorted.")
         return self.results
 
 if __name__ == "__main__":
