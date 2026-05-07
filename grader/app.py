@@ -43,7 +43,7 @@ def index():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NeonStage Infrastructure Grader</title>
+        <title>Recognition Vault Infrastructure Grader</title>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
         <style>
             :root {
@@ -86,8 +86,8 @@ def index():
     <body>
         <div class="container">
             <h1 style="display:flex; align-items:center; gap:15px; margin-bottom:40px;">
-                <span style="font-size:3rem">🎯</span> 
-                <span>NeonStage <span style="color:var(--accent)">Infrastructure Grader</span> <span style="font-size:1rem; opacity:0.5">v2.1</span></span>
+                <span style="font-size:3rem">🏛️</span> 
+                <span>Recognition Vault <span style="color:var(--accent)">Infrastructure Grader</span> <span style="font-size:1rem; opacity:0.5">v3.0</span></span>
             </h1>
 
             <div class="grid">
@@ -148,20 +148,20 @@ def index():
 
                         <div id="checklistItems">
                             <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-                                <input type="checkbox" id="check_rooms" style="width:20px; height:20px">
-                                <label>Room list is visible and correct</label>
+                                <input type="checkbox" id="check_auth" style="width:20px; height:20px">
+                                <label>Customer registration and login works</label>
                             </div>
                             <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-                                <input type="checkbox" id="check_booking" style="width:20px; height:20px">
-                                <label>Booking process (atomic lock) works</label>
+                                <input type="checkbox" id="check_biometric" style="width:20px; height:20px">
+                                <label>Biometric upload (S3) and face detection works</label>
                             </div>
                             <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-                                <input type="checkbox" id="check_payment" style="width:20px; height:20px">
-                                <label>Payment proof upload (S3) works</label>
+                                <input type="checkbox" id="check_sqs" style="width:20px; height:20px">
+                                <label>Asynchronous processing (SQS -> Lambda) works</label>
                             </div>
                             <div style="margin-bottom:10px; display:flex; align-items:center; gap:10px;">
-                                <input type="checkbox" id="check_status" style="width:20px; height:20px">
-                                <label>Booking status tracking works</label>
+                                <input type="checkbox" id="check_history" style="width:20px; height:20px">
+                                <label>Transaction history and audit trail are visible</label>
                             </div>
                         </div>
 
@@ -203,10 +203,10 @@ def index():
 
             async function finalizeGrade() {
                 const checklist = {
-                    "Rooms List": document.getElementById('check_rooms').checked,
-                    "Booking Logic": document.getElementById('check_booking').checked,
-                    "Payment Upload": document.getElementById('check_payment').checked,
-                    "Status Tracking": document.getElementById('check_status').checked
+                    "Authentication": document.getElementById('check_auth').checked,
+                    "Biometric Pipeline": document.getElementById('check_biometric').checked,
+                    "SQS Processing": document.getElementById('check_sqs').checked,
+                    "Audit Trail": document.getElementById('check_history').checked
                 };
                 
                 const manualResults = Object.entries(checklist).map(([item, pass]) => ({
