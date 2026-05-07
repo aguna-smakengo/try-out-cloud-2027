@@ -2,41 +2,76 @@ import boto3
 
 def check_compute_compliance(lmb, apg):
     points = []
+    
+    # Configuration Standards
     required_lambdas = [
-        ('bank-recognition-auth', 'python3.12', 256, 20),
-        ('bank-recognition-ingest', 'python3.12', 1024, 60),
-        ('bank-recognition-query', 'python3.12', 512, 30),
-        ('bank-recognition-processing', 'python3.12', 512, 120),
-        ('bank-recognition-interest', 'python3.12', 256, 60)
+        # (Name, Runtime, Memory, Timeout, Handler)
+        ('bank-recognition-auth', 'python3.12', 256, 20, 'index.lambda_handler'),
+        ('bank-recognition-ingest', 'python3.12', 1024, 60, 'index.lambda_handler'),
+        ('bank-recognition-query', 'python3.12', 512, 30, 'index.lambda_handler'),
+        ('bank-recognition-processing', 'python3.12', 512, 120, 'index.lambda_handler'),
+        ('bank-recognition-interest', 'python3.12', 256, 60, 'index.lambda_handler')
     ]
-    for name, runtime, mem, timeout in required_lambdas:
+    
+    for name, runtime, mem, timeout, handler in required_lambdas:
+        conf = None
         try:
             fn = lmb.get_function(FunctionName=name)
             conf = fn['Configuration']
-            points.append({"Category": f"9. Lambda: {name}", "Item": "Existence", "Status": "PASS", "Score": 1, "Feedback": "Found"})
-            points.append({"Category": f"9. Lambda: {name}", "Item": f"Runtime: {runtime}", "Status": "PASS" if conf['Runtime'] == runtime else "FAIL", "Score": 1 if conf['Runtime'] == runtime else 0, "Feedback": conf['Runtime']})
-            points.append({"Category": f"9. Lambda: {name}", "Item": f"Memory: {mem}MB", "Status": "PASS" if conf['MemorySize'] == mem else "FAIL", "Score": 1 if conf['MemorySize'] == mem else 0, "Feedback": f"{conf['MemorySize']}MB"})
-            points.append({"Category": f"9. Lambda: {name}", "Item": "VPC Integration", "Status": "PASS" if 'VpcConfig' in conf and conf['VpcConfig'].get('VpcId') else "FAIL", "Score": 1 if 'VpcConfig' in conf else 0, "Feedback": "Connected"})
         except:
-            points.append({"Category": f"9. Lambda: {name}", "Item": "Existence", "Status": "FAIL", "Score": 0, "Feedback": "Not found"})
+            pass
 
+        # 1. Existence Point
+        status = "PASS" if conf else "FAIL"
+        points.append({"Category": f"9. Lambda: {name}", "Item": "Existence", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": "Found" if conf else "Resource Missing"})
+        
+        # 2. Runtime Point
+        status = "PASS" if conf and conf.get('Runtime') == runtime else "FAIL"
+        points.append({"Category": f"9. Lambda: {name}", "Item": f"Runtime: {runtime}", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": conf.get('Runtime', 'N/A') if conf else "N/A"})
+        
+        # 3. Memory Point
+        status = "PASS" if conf and conf.get('MemorySize') == mem else "FAIL"
+        points.append({"Category": f"9. Lambda: {name}", "Item": f"Memory: {mem}MB", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": f"{conf.get('MemorySize', 'N/A')}MB" if conf else "N/A"})
+        
+        # 4. Timeout Point
+        status = "PASS" if conf and conf.get('Timeout') == timeout else "FAIL"
+        points.append({"Category": f"9. Lambda: {name}", "Item": f"Timeout: {timeout}s", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": f"{conf.get('Timeout', 'N/A')}s" if conf else "N/A"})
+        
+        # 5. Handler Point
+        status = "PASS" if conf and conf.get('Handler') == handler else "FAIL"
+        points.append({"Category": f"9. Lambda: {name}", "Item": f"Handler: {handler}", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": conf.get('Handler', 'N/A') if conf else "N/A"})
+
+        # 6. VPC Integration Point
+        vpc_ok = conf and 'VpcConfig' in conf and conf['VpcConfig'].get('VpcId')
+        points.append({"Category": f"9. Lambda: {name}", "Item": "VPC Integration", "Status": "PASS" if vpc_ok else "FAIL", "Score": 1 if vpc_ok else 0, "Feedback": "Connected" if vpc_ok else "Isolated/Disconnected"})
+
+    # --- API Gateway Section ---
     try:
         apis = apg.get_rest_apis()['items']
         br_api = next((a for a in apis if a['name'] == 'bank-recognition-api'), None)
+        
+        # Always check these attributes for the API
+        status = "PASS" if br_api else "FAIL"
+        points.append({"Category": "10. API Gateway", "Item": "API Existence", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": "bank-recognition-api"})
+        
+        # Regional check
+        reg_ok = br_api and 'REGIONAL' in br_api.get('endpointConfiguration', {}).get('types', [])
+        points.append({"Category": "10. API Gateway", "Item": "Endpoint Type: REGIONAL", "Status": "PASS" if reg_ok else "FAIL", "Score": 1 if reg_ok else 0, "Feedback": "REGIONAL" if reg_ok else "N/A"})
+
+        # Resource Paths
+        resources = []
         if br_api:
-            api_id = br_api['id']
-            points.append({"Category": "10. API Gateway", "Item": "API Existence", "Status": "PASS", "Score": 1, "Feedback": "bank-recognition-api"})
-            points.append({"Category": "10. API Gateway", "Item": "Endpoint Type: REGIONAL", "Status": "PASS" if 'REGIONAL' in br_api['endpointConfiguration']['types'] else "FAIL", "Score": 1 if 'REGIONAL' in br_api['endpointConfiguration']['types'] else 0, "Feedback": "Regional"})
-            resources = apg.get_resources(restApiId=api_id)['items']
-            for path in ['/auth', '/ingest', '/query']:
-                res = next((r for r in resources if r['path'] == path), None)
-                status = "PASS" if res else "FAIL"
-                points.append({"Category": f"10. API Resource: {path}", "Item": "Existence", "Status": status, "Score": 1 if status == "PASS" else 0, "Feedback": "Found" if res else "Missing"})
-                if res:
-                    has_post = 'POST' in res.get('resourceMethods', {})
-                    points.append({"Category": f"10. API Resource: {path}", "Item": "Method: POST", "Status": "PASS" if has_post else "FAIL", "Score": 1 if has_post else 0, "Feedback": "Configured"})
-        else:
-            points.append({"Category": "10. API Gateway", "Item": "API Existence", "Status": "FAIL", "Score": 0, "Feedback": "Missing"})
+            resources = apg.get_resources(restApiId=br_api['id'])['items']
+        
+        for path in ['/auth', '/ingest', '/query']:
+            res = next((r for r in resources if r['path'] == path), None)
+            points.append({"Category": f"10. API Resource: {path}", "Item": "Resource Existence", "Status": "PASS" if res else "FAIL", "Score": 1 if res else 0, "Feedback": "Found" if res else "Missing"})
+            
+            # Method Check
+            has_post = res and 'POST' in res.get('resourceMethods', {})
+            points.append({"Category": f"10. API Resource: {path}", "Item": "Method: POST", "Status": "PASS" if has_post else "FAIL", "Score": 1 if has_post else 0, "Feedback": "Configured" if has_post else "N/A"})
+            
     except:
-        points.append({"Category": "10. API Gateway", "Item": "API Audit", "Status": "FAIL", "Score": 0, "Feedback": "Error"})
+        pass
+
     return points
