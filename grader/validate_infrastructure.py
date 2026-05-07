@@ -27,8 +27,8 @@ class InfrastructureGrader:
         self.progress_callback = progress_callback
         self.results = []
         self.discovery_metadata = {
-            "api_url": "Not Found",
-            "alb_url": "Amplify Console"
+            "api_url": "⚠️ API Gateway Not Found",
+            "alb_url": "⚠️ Amplify Not Found (Check Console)"
         }
 
     def log(self, message):
@@ -37,7 +37,7 @@ class InfrastructureGrader:
         print(f"[*] {message}")
 
     def run_all_checks(self):
-        self.log("🚀 Initializing Recognition Vault MICRO-AUDIT Engine...")
+        self.log("🚀 Initializing Recognition Vault INSANE-DETAIL Engine...")
         
         # Clients
         ec2 = self.session.client('ec2')
@@ -52,26 +52,26 @@ class InfrastructureGrader:
         eb = self.session.client('events')
         amp = self.session.client('amplify')
 
-        # Run Modular Micro-Audits
-        self.log("🔍 [1/7] Micro-Auditing CloudFormation Stacks...")
+        # Run Modular Insane-Audits
+        self.log("🔍 [1/7] Auditing CloudFormation Stacks...")
         self.results.extend(check_cf_compliance(cf))
 
-        self.log("🔍 [2/7] Micro-Auditing VPC & Networking Configuration...")
+        self.log("🔍 [2/7] Inspecting Networking Forensics...")
         self.results.extend(check_vpc_compliance(ec2))
 
-        self.log("🔍 [3/7] Micro-Auditing Storage Security & Vaults...")
+        self.log("🔍 [3/7] Auditing Storage Security...")
         self.results.extend(check_storage_compliance(s3, sts))
 
-        self.log("🔍 [4/7] Micro-Auditing Database Engine & Schema...")
+        self.log("🔍 [4/7] Validating Database Internals...")
         self.results.extend(check_database_compliance(rds, ddb))
 
-        self.log("🔍 [5/7] Micro-Auditing Automation Rules & Messaging...")
+        self.log("🔍 [5/7] Verifying Automation Pipeline...")
         self.results.extend(check_automation_compliance(sqs, eb))
 
-        self.log("🔍 [6/7] Micro-Auditing Lambda Microservices & API Gateway Resources...")
+        self.log("🔍 [6/7] Scanning Compute & API Layers...")
         self.results.extend(check_compute_compliance(lmb, apg))
 
-        self.log("🔍 [7/7] Micro-Auditing Amplify Frontend Deployment...")
+        self.log("🔍 [7/7] Auditing Amplify Deployment...")
         self.results.extend(check_amplify_compliance(amp))
 
         # Discovery Metadata (For Dashboard)
@@ -84,12 +84,19 @@ class InfrastructureGrader:
             apps = amp.list_apps()['apps']
             br_app = next((a for a in apps if 'bank-recognition' in a['name'].lower()), None)
             if br_app:
-                # Find master branch for URL
                 branches = amp.list_branches(appId=br_app['appId'])['branches']
                 master = next((b for b in branches if b['branchName'] in ['master', 'main']), None)
                 if master:
                     self.discovery_metadata["alb_url"] = f"https://{master['branchName']}.{br_app['defaultDomain']}"
+                else:
+                    self.discovery_metadata["alb_url"] = "⚠️ App Found, but Branch Missing"
         except: pass
 
-        self.log("✅ Micro-Audit Complete. Generating Granular Report...")
+        self.log("✅ Audit Complete.")
         return self.results
+
+if __name__ == "__main__":
+    import sys
+    grader = InfrastructureGrader(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv)>3 else None)
+    results = grader.run_all_checks()
+    print(f"Total Points: {len(results)}")

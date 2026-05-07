@@ -137,8 +137,8 @@ def index():
                         <p style="font-size:0.9rem; color:#94a3b8">The infrastructure scan is complete. Now, click the ALB link below and verify the frontend functionality.</p>
                         
                         <div style="background:var(--card); padding:15px; border-radius:8px; margin-bottom:10px; border:1px solid var(--primary);">
-                            <label style="display:block; font-size:0.8rem; color:#94a3b8; margin-bottom:5px">ALB URL (Application Interface):</label>
-                            <a id="albLink" href="#" target="_blank" style="color:var(--accent); font-weight:700; word-break:break-all"></a>
+                            <label style="display:block; font-size:0.8rem; color:#94a3b8; margin-bottom:5px">Frontend URL (Application Interface):</label>
+                            <a id="albLink" href="#" target="_blank" style="color:var(--accent); font-weight:700; word-break:break-all">Not Found</a>
                         </div>
                         
                         <div style="background:var(--card); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--accent);">
@@ -370,8 +370,17 @@ def index():
                         
                         // Show Manual Checklist
                         manualCheckCard.style.display = 'block';
-                        document.getElementById('albLink').innerText = data.metadata.alb_url;
-                        document.getElementById('albLink').href = "http://" + data.metadata.alb_url;
+                        const albUrl = data.metadata.alb_url;
+                        const albLink = document.getElementById('albLink');
+                        albLink.innerText = albUrl;
+                        if (albUrl.startsWith('⚠️')) {
+                            albLink.href = 'javascript:void(0)';
+                            albLink.style.color = 'var(--fail)';
+                        } else {
+                            albLink.href = albUrl.startsWith('http') ? albUrl : "https://" + albUrl;
+                            albLink.style.color = 'var(--accent)';
+                        }
+                        
                         document.getElementById('apiLink').innerText = data.metadata.api_url;
                         
                         eventSource.close();
