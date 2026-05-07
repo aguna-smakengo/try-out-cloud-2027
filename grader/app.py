@@ -103,7 +103,7 @@ def index():
                                 <input type="text" id="session_token" placeholder="Optional for LabRole">
                             </div>
                             
-                            <button type="submit" id="submitBtn">Run 280+ Point Scan</button>
+                            <button type="submit" id="submitBtn">Run Comprehensive Audit</button>
                         </form>
                         <div class="loader-box" id="loaderBox">
                             <div class="spinner"></div>
