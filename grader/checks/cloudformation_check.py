@@ -41,6 +41,6 @@ def check_cf_compliance(cf):
         })
 
     except Exception as e:
-        points.append({"Category": "5. CloudFormation", "Item": "CF Audit Error", "Status": "FAIL", "Score": 0, "Feedback": str(e)})
+        points.append({"Category": "5. CloudFormation", "Item": "CF Audit Error", "Status": "FAIL", "Score": 0, "Expected": "Success", "Actual": "Error", "Feedback": str(e)})
         
     return points
